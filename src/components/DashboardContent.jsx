@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Calendar, MessageCircle, Plus, Search, Filter, ChevronDown, Home, BookOpen, Users, User, Bookmark, Settings, BarChart3, LogOut } from 'lucide-react';
+import { Clock, Calendar, MessageCircle, Plus, Search, Filter, ChevronDown, ChevronLeft, ChevronRight, Home, BookOpen, Users, User, Bookmark, Settings, BarChart3, LogOut } from 'lucide-react';
 
 const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [activeNav, setActiveNav] = useState('Dashboard');
-
+  const [submissionDropdownOpen, setSubmissionDropdownOpen] = useState(false);
+  const [leftArrowPressed, setLeftArrowPressed] = useState(false);
+  const [rightArrowPressed, setRightArrowPressed] = useState(false);
+  const [mostRecentDropdownOpen, setMostRecentDropdownOpen] = useState(false);
+  
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -113,9 +117,27 @@ const Dashboard = () => {
   ];
 
   const discussions = [
-    { user: 'Maya Thompson', class: 'Class 7', time: '12 Minutes', message: 'You: List the most recent or active discussion...' },
-    { user: 'Maya Thompson', class: 'Class 9', time: '12 Minutes', message: 'You: List the most recent or active discussion...' }
+    { user: 'Maya Thompson', class: 'Class 7', time: '12 Minutes', message: 'You: List the most recent or active discussion...', bgColor: '#FFFFFF' },
+    { user: 'Maya Thompson', class: 'Class 9', time: '12 Minutes', message: 'You: List the most recent or active discussion...', bgColor: '#ECF3FF' }
   ];
+
+  const handleLeftArrowClick = () => {
+    setLeftArrowPressed(true);
+    setTimeout(() => setLeftArrowPressed(false), 150);
+  };
+
+  const handleRightArrowClick = () => {
+    setRightArrowPressed(true);
+    setTimeout(() => setRightArrowPressed(false), 150);
+  };
+
+  const toggleMostRecentDropdown = () => {
+    setMostRecentDropdownOpen(!mostRecentDropdownOpen);
+  };
+
+  const closeMostRecentDropdown = () => {
+    setMostRecentDropdownOpen(false);
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -203,7 +225,7 @@ const Dashboard = () => {
         {/* Dashboard Content */}
         <main className="flex-1 overflow-y-auto p-6">
           {/* Welcome Header Card */}
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-8 mb-6 text-white relative overflow-hidden">
+          <div className="bg-blue-500 to-indigo-600 rounded-2xl p-8 mb-6 text-white relative overflow-hidden">
             <div className="flex justify-between items-center">
               <div className="flex-1">
                 <p className="text-blue-100 mb-2 text-sm font-medium">September 4, 2024</p>
@@ -215,16 +237,16 @@ const Dashboard = () => {
               </div>
               <div className="flex-shrink-0 relative">
                 <div className="w-48 h-48 relative">
-                  {/* Character illustration area */}
+                  {/* 3D Character illustration */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="relative">
                       {/* Main character */}
-                      <div className="text-6xl mb-4">👨‍🎓</div>
+                      <div className="text-9xl mb-4">👨‍🎓</div>
                       {/* Floating elements */}
-                      <div className="absolute -top-2 -left-8 w-12 h-12 bg-pink-400 rounded-lg flex items-center justify-center text-xl transform rotate-12 shadow-lg">
+                      <div className="absolute -top-2 -left-2 w-14 h-14 bg-pink-400 rounded-lg flex items-center justify-center text-xl transform rotate-12 shadow-lg">
                         📚
                       </div>
-                      <div className="absolute -top-4 right-4 w-10 h-10 bg-orange-400 rounded-lg flex items-center justify-center text-lg transform -rotate-12 shadow-lg">
+                      <div className="absolute -top-6 right-0 w-14 h-14 bg-orange-400 rounded-lg flex items-center justify-center text-lg transform -rotate-12 shadow-lg">
                         🎒
                       </div>
                     </div>
@@ -234,188 +256,396 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Assignments and Calendar */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Upcoming Assignments */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg">📋</span>
-                    <h3 className="text-lg font-semibold text-gray-800">Upcoming Assignments</h3>
-                  </div>
-                  <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</button>
+          {/* Dashboard Content Grid */}
+          <div className="grid grid-cols-12 gap-6">
+            {/* Row 1 - Upcoming Assignments & Discussion Board */}
+            <div className="col-span-7 bg-white rounded-2xl shadow-sm p-6">
+              {/* Upcoming Assignments Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <span className="mr-2">📂</span>
+                  <h3 className="font-bold text-lg text-gray-900">Upcoming Assignments</h3>
                 </div>
-                
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="text-left text-sm text-gray-500 border-b">
-                        <th className="pb-3 font-medium">Course</th>
-                        <th className="pb-3 font-medium">Title</th>
-                        <th className="pb-3 font-medium">Deadline</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {assignments.map((assignment, index) => (
-                        <tr key={index} className="border-b last:border-b-0">
-                          <td className="py-4">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-lg">{assignment.icon}</span>
-                              <span className="font-medium text-gray-800">{assignment.course}</span>
-                            </div>
-                          </td>
-                          <td className="py-4">
-                            <span className="text-gray-600">{assignment.title}</span>
-                          </td>
-                          <td className="py-4">
-                            <div className="flex items-center space-x-1 text-sm font-mono">
-                              <span className="bg-gray-100 px-2 py-1 rounded">{String(assignment.hours).padStart(2, '0')}</span>
-                              <span>:</span>
-                              <span className="bg-gray-100 px-2 py-1 rounded">{String(assignment.minutes).padStart(2, '0')}</span>
-                              <span>:</span>
-                              <span className="bg-gray-100 px-2 py-1 rounded">{String(assignment.seconds).padStart(2, '0')}</span>
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1 flex space-x-4">
-                              <span>Hours</span>
-                              <span>Minutes</span>
-                              <span>Seconds</span>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <button className="text-gray-500 hover:text-gray-700 font-semibold text-sm">
+                  View all
+                </button>
               </div>
 
-              {/* Upcoming Deadline Calendar */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center space-x-2 mb-6">
-                  <span className="text-lg">📅</span>
-                  <h3 className="text-lg font-semibold text-gray-800">Upcoming Deadline</h3>
-                </div>
-                
-                <div className="mb-4">
-                  <h4 className="font-medium text-gray-600 mb-3">December 2024</h4>
-                  <div className="grid grid-cols-7 gap-1 text-center text-sm">
-                    <div className="font-medium text-gray-400 py-2">S</div>
-                    <div className="font-medium text-gray-400 py-2">M</div>
-                    <div className="font-medium text-gray-400 py-2">T</div>
-                    <div className="font-medium text-gray-400 py-2">W</div>
-                    <div className="font-medium text-gray-400 py-2">T</div>
-                    <div className="font-medium text-gray-400 py-2">F</div>
-                    <div className="font-medium text-gray-400 py-2">S</div>
-                    
-                    {calendarDays.map((day, index) => (
-                      <div 
-                        key={index} 
-                        className={`py-2 px-1 rounded cursor-pointer ${
-                          day.active 
-                            ? 'bg-blue-500 text-white font-medium' 
-                            : day.inactive 
-                              ? 'text-gray-300' 
-                              : 'text-gray-700 hover:bg-gray-100'
-                        }`}
-                      >
-                        {day.date || ''}
+              {/* Table Headers */}
+              <div className="grid grid-cols-3 gap-4 mb-4 text-gray-900 font-semibold">
+                <div>Course</div>
+                <div>Title</div>
+                <div>Deadline</div>
+              </div>
+
+              {/* Assignment Rows */}
+              <div className="space-y-4">
+                {assignments.map((assignment, index) => (
+                  <div 
+                    key={index}
+                    className="grid grid-cols-3 gap-4 items-center pb-4 border-b border-blue-50"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg">{assignment.icon}</span>
+                      <span className="font-medium text-gray-800">{assignment.course}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">{assignment.title}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {/* Time Container */}
+                      <div className="flex items-center space-x-1">
+                        <div className="text-center">
+                          <div className="bg-blue-50 rounded px-2 py-1 text-sm font-mono">
+                            {String(assignment.hours).padStart(2, '0')}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Hours</div>
+                        </div>
+                        <span>:</span>
+                        <div className="text-center">
+                          <div className="bg-blue-50 rounded px-2 py-1 text-sm font-mono">
+                            {String(assignment.minutes).padStart(2, '0')}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Minutes</div>
+                        </div>
+                        <span>:</span>
+                        <div className="text-center">
+                          <div className="bg-blue-50 rounded px-2 py-1 text-sm font-mono">
+                            {String(assignment.seconds).padStart(2, '0')}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Seconds</div>
+                        </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* Right Column - Discussion Board and Submission Status */}
-            <div className="space-y-6">
-              {/* Discussion Board */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-2">
-                    <MessageCircle className="w-5 h-5 text-gray-600" />
-                    <h3 className="text-lg font-semibold text-gray-800">Discussion Board</h3>
-                  </div>
-                  <button className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-sm font-medium">
-                    <Plus className="w-4 h-4" />
-                    <span>New Discussion</span>
-                  </button>
+            <div className="col-span-5 bg-white rounded-2xl shadow-sm" style={{
+              width: '501px',
+              height: '450px',
+              borderRadius: '16px',
+              border: '1px solid rgba(13, 108, 255, 0.08)',
+              padding: '24px',
+              background: '#FFFFFF'
+            }}>
+              {/* Discussion Board Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <span className="mr-2" style={{ fontSize: '16px' }}>💬</span>
+                  <h3 style={{
+                    fontFamily: 'Montserrat',
+                    fontWeight: '700',
+                    fontSize: '16px',
+                    lineHeight: '100%',
+                    color: '#0B0B2C'
+                  }}>Discussion Board</h3>
                 </div>
+                <button className="flex items-center space-x-2 text-sm hover:opacity-70" style={{
+                  fontFamily: 'Montserrat',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  lineHeight: '100%',
+                  color: '#74759A'
+                }}>
+                  <Plus className="w-4 h-4" />
+                  <span>New Discussion</span>
+                </button>
+              </div>
 
-                <div className="mb-4">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        placeholder="Search Discussions..."
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      />
+              {/* Search and Filter */}
+              <div className="flex items-center mb-6" style={{ gap: '30px' }}>
+                <div className="relative" style={{ width: '282px', height: '40px' }}>
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/3 w-5 h-5" style={{ color: '#3B82F6' }} />
+                  <input
+                    type="text"
+                    placeholder="Search Discussions..."
+                    className="w-full pl-5 pr-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      height: '40px',
+                      borderRadius: '4px',
+                      backgroundColor: '#F8FAFC',
+                      border: '1px solid #E2E8F0',
+                      fontFamily: 'Montserrat',
+                      fontWeight: '400',
+                      fontSize: '14px',
+                      lineHeight: '100%',
+                      color: '#74759A'
+                    }}
+                  />
+                </div>
+                <div className="relative">
+                  <button 
+                    onClick={toggleMostRecentDropdown}
+                    className="flex items-center justify-between px-3 py-2 rounded hover:opacity-90"
+                    style={{
+                      width: '141px',
+                      height: '40px',
+                      borderRadius: '4px',
+                      padding: '10px',
+                      background: '#EFF4FF',
+                      fontFamily: 'Montserrat',
+                      fontWeight: '400',
+                      fontSize: '14px',
+                      color: '#74759A'
+                    }}
+                  >
+                    <span>Most Recent</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${mostRecentDropdownOpen ? 'rotate-180' : ''}`} style={{ color: '#74759A' }} />
+                  </button>
+                  
+                  {/* Most Recent Dropdown Menu */}
+                  {mostRecentDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded shadow-lg z-20">
+                      <div className="py-1">
+                        <button 
+                          onClick={closeMostRecentDropdown}
+                          className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                          style={{ color: '#74759A', fontFamily: 'Montserrat' }}
+                        >
+                          Most Recent
+                        </button>
+                        <button 
+                          onClick={closeMostRecentDropdown}
+                          className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                          style={{ color: '#74759A', fontFamily: 'Montserrat' }}
+                        >
+                          Most Active
+                        </button>
+                        <button 
+                          onClick={closeMostRecentDropdown}
+                          className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                          style={{ color: '#74759A', fontFamily: 'Montserrat' }}
+                        >
+                          Oldest First
+                        </button>
+                      </div>
                     </div>
-                    <button className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 flex items-center space-x-1">
-                      <span>Most Recent</span>
-                      <ChevronDown className="w-4 h-4" />
+                  )}
+                </div>
+              </div>
+
+              {/* Discussion Items Container */}
+              <div style={{ height: '250px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {discussions.map((discussion, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-start p-4 rounded-lg"
+                    style={{
+                      width: '453px',
+                      height: '117px',
+                      borderRadius: '8px',
+                      padding: '16px 10px',
+                      background: discussion.bgColor,
+                      boxShadow: '0px 4px 45px rgba(13, 108, 255, 0.08)',
+                      border: discussion.bgColor === '#FFFFFF' ? '1px solid rgba(13, 108, 255, 0.08)' : 'none'
+                    }}
+                  >
+                    <div className="flex-shrink-0 mr-3">
+                      <div 
+                        className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                        style={{
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          border: '2px solid white',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        👩‍🎓
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h4 style={{
+                          fontFamily: 'Montserrat',
+                          fontWeight: '600',
+                          fontSize: '16px',
+                          lineHeight: '100%',
+                          color: '#0B0B2C'
+                        }}>{discussion.user}</h4>
+                        <span style={{
+                          fontFamily: 'Montserrat',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          lineHeight: '100%',
+                          color: '#5C5D73',
+                          backgroundColor: 'white',
+                        }}>{discussion.class}</span>
+                        <span style={{
+                          fontFamily: 'Montserrat',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          lineHeight: '100%',
+                          color: '#5C5D73',
+                        }}>({discussion.time})</span>
+                      </div>
+                      <p style={{
+                        fontFamily: 'Montserrat',
+                        fontWeight: '400',
+                        fontSize: '16px',
+                        lineHeight: '100%',
+                        color: '#5C5D73',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>{discussion.message}</p>
+                    </div>
+                    <button className="flex-shrink-0" style={{ color: '#ACACAC' }}>
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Row 2 - Upcoming Deadline & Submission Status */}
+            <div className="col-span-4 bg-white rounded-2xl shadow-sm p-6">
+              {/* Upcoming Deadline Header */}
+              <div className="flex items-center mb-6">
+                <span className="mr-2">📅</span>
+                <h3 className="font-bold text-lg text-gray-900">Upcoming Deadline</h3>
+              </div>
+
+              {/* Calendar */}
+              <div>
+                {/* Calendar Header with Navigation Arrows */}
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-gray-600 font-medium">December 2024</h4>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      onClick={handleLeftArrowClick}
+                      className={`rounded-full p-1 transition-colors ${
+                        leftArrowPressed ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={handleRightArrowClick}
+                      className={`rounded-full p-1 transition-colors ${
+                        rightArrowPressed ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {discussions.map((discussion, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                      <img
-                        src={getCharacterAvatar(discussion.user)}
-                        alt={discussion.user}
-                        className="w-10 h-10 rounded-full border-2 border-white shadow-sm"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h4 className="font-medium text-gray-800 text-sm">{discussion.user}</h4>
-                          <span className="text-xs text-gray-500">{discussion.class}</span>
-                          <span className="text-xs text-gray-400">({discussion.time})</span>
-                        </div>
-                        <p className="text-sm text-gray-600">{discussion.message}</p>
-                      </div>
-                      <button className="text-gray-400 hover:text-gray-600">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                        </svg>
-                      </button>
+                {/* Days of Week */}
+                <div className="grid grid-cols-7 gap-1 text-center mb-4 text-gray-500 text-sm">
+                  {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                    <div key={index} className="font-medium">{day}</div>
+                  ))}
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1 text-center text-sm">
+                  {calendarDays.map((day, index) => (
+                    <div 
+                      key={index}
+                      className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${
+                        day.active 
+                          ? 'bg-blue-50 text-blue-600 font-semibold' 
+                          : day.inactive 
+                            ? 'text-gray-300' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {day.date || ''}
                     </div>
                   ))}
                 </div>
               </div>
+            </div>
 
-              {/* Single Submission Status Card */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-blue-200 border-2">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-semibold text-gray-800">Submission Status</h4>
-                  <button className="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-1 hover:bg-blue-600 transition-colors">
+            <div className="col-span-8 bg-white rounded-2xl shadow-sm border border-blue-200 p-6">
+              {/* Header Row - Aligned Submission Status and View All */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="relative">
+                  <button 
+                    onClick={() => setSubmissionDropdownOpen(!submissionDropdownOpen)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 hover:bg-blue-600"
+                  >
                     <span>Submission Status</span>
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${submissionDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
-                </div>
-                <div className="flex items-center justify-end mb-4">
-                  <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</button>
-                </div>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-600 pb-2 border-b border-gray-200">
-                    <span>Assignments</span>
-                    <span>Title</span>
-                    <span>Due Date</span>
-                    <span>Status</span>
-                  </div>
-                  {submissionData.map((item, index) => (
-                    <div key={index} className="grid grid-cols-4 gap-4 text-sm items-center py-2">
-                      <span className="text-gray-700">Assignments</span>
-                      <span className="text-gray-700 font-medium">{item.title}</span>
-                      <span className="text-gray-600 font-mono">{item.time}</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${
-                        item.status === 'Submitted' ? 'bg-green-100 text-green-800' :
-                        item.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
-                      }`}>{item.status}</span>
+                  
+                  {/* Dropdown Menu */}
+                  {submissionDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                      <div className="py-1">
+                        <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All Submissions</button>
+                        <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Submitted</button>
+                        <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">In Progress</button>
+                        <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Not Started</button>
+                      </div>
                     </div>
-                  ))}
+                  )}
                 </div>
+                <button className="text-gray-500 hover:text-gray-700 text-sm font-medium">View All</button>
+              </div>
+
+              {/* Table Headers - Fixed grid with proper spacing */}
+              <div className="grid grid-cols-12 gap-4 text-sm font-semibold text-gray-900 pb-4 mb-4 border-b border-gray-200">
+                <span className="col-span-2">Assignments</span>
+                <span className="col-span-3">Title</span>
+                <span className="col-span-4">Due Date</span>
+                <span className="col-span-3">Status</span>
+              </div>
+
+              {/* Submission Rows Container */}
+              <div className="space-y-4">
+                {submissionData.map((item, index) => (
+                  <div 
+                    key={index} 
+                    className="bg-white rounded-lg p-3 shadow-sm border border-blue-50"
+                    style={{
+                      borderRadius: '8px',
+                      padding: '10px',
+                      backgroundColor: '#FFFFFF',
+                      boxShadow: '0px 4px 45px 0px rgba(13, 108, 255, 0.08)'
+                    }}
+                  >
+                    <div className="grid grid-cols-12 gap-4 text-sm items-center">
+                      <span className="col-span-2 text-gray-700">Assignments</span>
+                      <span className="col-span-3 text-gray-700 font-medium">{item.title}</span>
+                      
+                      {/* Time Display - Centered in column */}
+                      <div className="col-span-4 flex items-center justify-start space-x-1">
+                        <div className="text-center">
+                          <div className="bg-blue-50 rounded px-2 py-1 text-xs font-mono font-medium">
+                            {item.time.split(':')[0]}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Hours</div>
+                        </div>
+                        <span className="text-gray-600 text-xs">:</span>
+                        <div className="text-center">
+                          <div className="bg-blue-50 rounded px-2 py-1 text-xs font-mono font-medium">
+                            {item.time.split(':')[1]}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Minutes</div>
+                        </div>
+                        <span className="text-gray-600 text-xs">:</span>
+                        <div className="text-center">
+                          <div className="bg-blue-50 rounded px-2 py-1 text-xs font-mono font-medium">
+                            {item.time.split(':')[2]}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Seconds</div>
+                        </div>
+                      </div>
+
+                      {/* Status - Takes remaining space */}
+                      <span className={`col-span-3 text-sm font-medium ${
+                        item.status === 'Submitted' ? 'text-green-600' :
+                        item.status === 'In Progress' ? 'text-orange-600' : 'text-gray-600'
+                      }`}>
+                        {item.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

@@ -1,421 +1,351 @@
 import React, { useState } from 'react';
-import { Plus, Calendar, Users, TrendingUp, MessageCircle, Search, ChevronDown, BarChart, FileText } from 'lucide-react';
-import { LineChart, Line, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { Plus, ChevronDown, Bell, Search, MoreHorizontal } from 'lucide-react';
 
-const ProfessorDashboardContent = ({ userName = 'Prof. Jane Smith' }) => {
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    month: 'long', 
-    day: 'numeric', 
-    year: 'numeric' 
-  });
+const ProfessorDashboard = () => {
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
 
-  const activeCourses = [
-    {
-      title: 'Medieval History',
-      instructor: 'Prof. Jane Smith',
-      date: 'August 20, 2024',
-      enrollment: 140,
-      assignments: 13,
-      recentActivity: 'Discussion posted on August 14, 2024'
-    },
-    {
-      title: 'Philosophy of The Person',
-      instructor: 'Prof. Jane Smith', 
-      date: 'September 4, 2024',
-      enrollment: 85,
-      assignments: 8,
-      recentActivity: 'New assignment posted on September 2, 2024'
-    }
+  const sidebarItems = [
+    { name: 'Overview', icon: '📊', active: true },
+    { name: 'Assignments', icon: '📚', active: false },
+    { name: 'Discussions', icon: '💬', active: false },
+    { name: 'Students', icon: '👥', active: false },
+    { name: 'Resources', icon: '📁', active: false },
+    { name: 'Analytics', icon: '📈', active: false },
   ];
 
-  const assignments = [
-    {
-      type: 'Answer Writing',
-      course: 'Medieval History',
-      dueDate: 'August 20, 2024',
-      status: 'Pending Grading',
-      submissions: 13
-    },
-    {
-      type: 'Essay Assignment', 
-      course: 'Philosophy of The Person',
-      dueDate: 'September 10, 2024',
-      status: 'Active',
-      submissions: 25
-    }
-  ];
-
-  const calendarEvents = [
-    {
-      day: 'Mon',
-      date: 16,
-      time: '8:00PM',
-      course: 'Medieval History',
-      duration: '8:00 - 9:00',
-      status: 'In Progress'
-    },
-    {
-      day: 'Tue', 
-      date: 17,
-      time: '9:00PM',
-      course: 'Philosophy of The Person',
-      duration: '9:00 - 10:00',
-      status: 'Scheduled'
-    }
-  ];
-
-  const students = [
-    { name: 'Maya Thompson', performance: 'A / 92%', course: 'Medieval History', id: 1 },
-    { name: 'John Doe', performance: 'B+ / 87%', course: 'Philosophy', id: 2 },
-    { name: 'Sarah Wilson', performance: 'A- / 89%', course: 'Medieval History', id: 3 },
-    { name: 'Mike Johnson', performance: 'B / 84%', course: 'Philosophy', id: 4 },
-    { name: 'Emily Davis', performance: 'A+ / 95%', course: 'Medieval History', id: 5 }
-  ];
-
-  const performanceData = [
-    { month: 'Jan', students: 120, submissions: 450, grades: 420 },
-    { month: 'Feb', students: 135, submissions: 520, grades: 485 },
-    { month: 'Mar', students: 125, submissions: 480, grades: 465 },
-    { month: 'Apr', students: 140, submissions: 580, grades: 550 },
-    { month: 'May', students: 150, submissions: 620, grades: 590 },
-    { month: 'Jun', students: 145, submissions: 595, grades: 570 }
-  ];
-
-  const discussions = [
-    {
-      user: 'Maya Thompson',
-      class: 'Medieval History',
-      time: '12 Minutes',
-      message: 'Discussion about feudalism in medieval Europe...'
-    },
-    {
-      user: 'John Doe', 
-      class: 'Philosophy',
-      time: '25 Minutes',
-      message: 'Question regarding Aristotelian ethics...'
-    }
-  ];
-
-  const announcements = [
-    {
-      type: 'Schedule Changes',
-      author: 'System',
-      date: 'September 4, 2024',
-      title: 'Lecture rescheduled for September 10th due to conference',
-      priority: 'high'
-    },
-    {
-      type: 'Assignment Reminder',
-      author: 'System', 
-      date: 'September 3, 2024',
-      title: '15 students have pending submissions in Medieval History',
-      priority: 'medium'
-    }
+  const calendarDays = [
+    { day: 'Mon', date: 16 },
+    { day: 'Tue', date: 17 },
+    { day: 'Wed', date: 18 },
+    { day: 'Thu', date: 19, active: true },
+    { day: 'Fri', date: 20 },
+    { day: 'Sat', date: 21 },
+    { day: 'Sun', date: 22 },
   ];
 
   return (
-    <main className="p-6 overflow-y-auto bg-gray-50 min-h-screen ml-64">
-      {/* Welcome Header Card */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 header-gradient rounded-2xl p-8 mb-6 text-white relative overflow-hidden">
-        <div className="flex justify-between items-center">
-          <div className="flex-1">
-            <p className="text-blue-100 mb-2 text-sm font-medium">{currentDate}</p>
-            <h1 className="text-3xl font-bold mb-2">Welcome Back 👋</h1>
-            <h2 className="text-2xl font-semibold">{userName}</h2>
+    <div className="flex w-screen min-h-screen bg-[#F0F2F5] font-montserrat">
+      {/* Sidebar */}
+      <div className="w-[234px] min-h-screen bg-gradient-to-b from-[#340058] to-[#0D6CFF] flex flex-col py-8 px-6 text-white fixed left-0 top-0 z-10">
+        {/* Logo */}
+        <div className="flex items-center space-x-2 mb-10">
+          <div className="w-9 h-9 bg-white rounded flex items-center justify-center">
+            <span className="text-[#340058] font-bold text-2xl">K</span>
           </div>
-          <div className="flex-shrink-0 relative">
-            {/* 3D Professor Character */}
-            <div className="w-48 h-48 flex items-center justify-center text-6xl relative">
-              👨‍🏫
-              {/* Floating academic elements */}
-              <div className="absolute -top-4 -right-4 w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center text-xl transform rotate-12">
-                📊
-              </div>
-              <div className="absolute -bottom-2 -left-6 w-10 h-10 bg-green-400 rounded-lg flex items-center justify-center text-lg transform -rotate-12">
-                📝
-              </div>
+          <span className="font-bold text-lg">KITAHUB</span>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1">
+          {sidebarItems.map((item, index) => (
+            <div
+              key={index}
+              className={`flex items-center px-4 py-3 mb-2 rounded-lg cursor-pointer transition-colors ${
+                item.active
+                  ? 'bg-white bg-opacity-20 text-white'
+                  : 'text-gray-300 hover:bg-white hover:bg-opacity-10'
+              }`}
+            >
+              <span className="mr-3 text-xl">{item.icon}</span>
+              <span className="font-medium text-sm">{item.name}</span>
             </div>
-          </div>
+          ))}
+        </nav>
+
+        {/* Log Out Button */}
+        <div className="flex items-center cursor-pointer text-gray-300 hover:text-white transition-colors mt-auto pt-6">
+          <span className="mr-3 text-xl">🚪</span>
+          <span className="font-medium text-sm">Log Out</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Section - Courses and Calendar */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Active Courses */}
-          <div className="bg-white rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">📚</span>
-                <h3 className="text-lg font-semibold text-gray-800">Active Courses</h3>
-              </div>
-              <button className="btn-primary flex items-center space-x-2">
-                <Plus className="w-4 h-4" />
-                <span>New Course</span>
-              </button>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col ml-[234px] ">
+        {/* Header */}
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+          <button className="bg-[#0D6CFF] text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+            Switch to Student View
+          </button>
+          <div className="flex items-center space-x-4">
+            <div className="relative p-2 rounded-full bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors">
+              <Bell className="w-5 h-5 text-gray-600" />
+              <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
             </div>
-            
-            <div className="space-y-4">
-              {activeCourses.map((course, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors card-hover">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-gray-800">{course.title}</h4>
-                    <button className="text-gray-400 hover:text-gray-600">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">{course.instructor}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-                    <span>Started: {course.date}</span>
-                    <div className="flex items-center space-x-4">
-                      <span className="flex items-center space-x-1">
-                        <Users className="w-4 h-4" />
-                        <span className="font-medium">{course.enrollment}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <FileText className="w-4 h-4" />
-                        <span>{course.assignments}</span>
-                      </span>
+            <div className="flex items-center space-x-2">
+              <div className="text-right">
+                <p className="font-semibold text-gray-900 text-sm">Prof. Jane Smith</p>
+                <p className="text-xs text-gray-500">Professor</p>
+              </div>
+              <img
+                src="https://ui-avatars.com/api/?name=Jane+Smith&background=0D6CFF&color=fff&size=40"
+                alt="Prof. Jane Smith"
+                className="w-10 h-10 rounded-full border-2 border-white shadow"
+              />
+            </div>
+          </div>
+        </header>
+
+        {/* Content Area */}
+        <main className="flex-1 overflow-y-auto p-6 xl:px-12">
+          {/* Welcome Banner */}
+          <div
+            className="rounded-2xl text-white relative overflow-hidden mb-6 flex justify-between items-center px-12"
+            style={{
+              background: 'linear-gradient(90deg, #0D6CFF 0%, #60A5FF 100%)',
+              height: '280px'
+            }}
+          >
+            <div>
+              <p className="text-white text-opacity-90 text-sm mb-3">September 4, 2024</p>
+              <div className="mb-2">
+                <span className="text-3xl font-light mr-2">Welcome Back</span>
+                <span className="text-3xl">👋</span>
+              </div>
+              <h2 className="text-3xl font-bold">Prof. Jane Smith</h2>
+            </div>
+            <div className="w-[200px] h-[200px] flex items-center justify-center">
+              <div className="text-[120px]">👨‍🏫</div>
+            </div>
+          </div>
+
+          {/* Main Grid - 2x2 Layout */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Top Left - Active Courses */}
+            <div className="bg-white rounded-2xl shadow-sm" style={{ width: '573px', height: '350px' }}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-[#0B0B2C]">📚 Active Courses</h3>
+                  <button className="text-[#74759A] bg-white px-4 py-2 rounded-lg text-sm font-light flex items-center ">
+                    <Plus className="w-7 h-7 mr-2" />
+                    New Course
+                  </button>
+                </div>
+
+                <div className="space-y-04 overflow-y-auto max-h-[240px]">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-xl text-[#0B0B2C]">Medieval History</h4>
+                        <span className="text-sm text-[#8586A6]">August 20, 2024</span>
+                      </div>
+                      <p className="text-base font-medium text-[#0B0B2C] mb-3">Prof. Jane Smith</p>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium text-[#8586A6]">Enrollment:</span>
+                          <div className="flex -space-x-1 mr-2">
+                            <img src="https://promptsideas.b-cdn.net/prompts/11216/R1tnPab6j1N3C25aPJ-t.png" alt="user" className="w-5 h-5 rounded-full border border-white" />
+                            <img src="https://promptsideas.b-cdn.net/prompts/11216/YHIIUoIrdbsWUk2IJzyz.png" alt="user" className="w-5 h-5 rounded-full border border-white" />
+                            <img src="https://easy-peasy.ai/_next/image?url=https%3A%2F%2Fmedia.easy-peasy.ai%2Fea726477-e66b-4c73-bcbd-8efcdf91df1b%2F9c3e73e5-b967-40bb-8d30-01abe8470cb4.png&w=828&q=75" alt="user" className="w-5 h-5 rounded-full border border-white" />
+                          </div>
+                          <span className="text-xs font-medium text-[#74759A]">+60 More</span>
+                        </div>
+                        <span className="text-sm font-medium text-[#8586A6]">Assignment: 13</span>
+                      </div>
+                      <p className="text-sm font-medium text-[#8586A6]">Recent Activity: Discussion posted on August 14, 2024</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Top Right - Assignments */}
+            <div className="bg-white rounded-2xl shadow-sm" style={{ width: '573px', height: '350px' }}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-[#0B0B2C]">📁 Assignments</h3>
+                  <button className="text-[#74759A] bg-white px-4 py-2 rounded-lg text-sm font-light flex items-center ">
+                    <Plus className="w-7 h-7 mr-2" />
+                    New Assignment
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between mb-6">
+                  <h4 className="font-medium text-sm text-[#74759A]">Pending Submission</h4>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-[#74759A]">Sort By:</span>
+                    <div className="relative">
+                      <button 
+                        onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                        className="flex items-center bg-[#EFF4FF] px-3 py-2 rounded text-sm font-semibold text-[#74759A] hover:bg-blue-100 transition-colors"
+                      >
+                        Due Date <ChevronDown className="w-4 h-4 ml-1" />
+                      </button>
+                      {sortDropdownOpen && (
+                        <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-20 min-w-[120px]">
+                          {['Due Date', 'Subject', 'Status'].map((opt) => (
+                            <button
+                              key={opt}
+                              onClick={() => setSortDropdownOpen(false)}
+                              className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50 text-[#74759A]"
+                            >
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500">Recent Activity: {course.recentActivity}</p>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Calendar */}
-          <div className="bg-white rounded-xl p-6 card-shadow">
-            <div className="flex items-center space-x-2 mb-6">
-              <Calendar className="w-5 h-5 text-gray-600" />
-              <h3 className="text-lg font-semibold text-gray-800">Schedule</h3>
-            </div>
-            
-            <div className="grid grid-cols-7 gap-1 text-center text-sm mb-4">
-              <div className="font-medium text-gray-400 py-2">Mon</div>
-              <div className="font-medium text-gray-400 py-2">Tue</div>
-              <div className="font-medium text-gray-400 py-2">Wed</div>
-              <div className="font-medium text-gray-400 py-2">Thu</div>
-              <div className="font-medium text-gray-400 py-2">Fri</div>
-              <div className="font-medium text-gray-400 py-2">Sat</div>
-              <div className="font-medium text-gray-400 py-2">Sun</div>
-              
-              <div className="py-2 px-1 rounded text-gray-700">16</div>
-              <div className="py-2 px-1 rounded text-gray-700">17</div>
-              <div className="py-2 px-1 rounded text-gray-700">18</div>
-              <div className="py-2 px-1 rounded bg-blue-500 text-white font-medium">19</div>
-              <div className="py-2 px-1 rounded text-gray-700">20</div>
-              <div className="py-2 px-1 rounded text-gray-700">21</div>
-              <div className="py-2 px-1 rounded text-gray-700">22</div>
+                <div className="space-y-4 overflow-y-auto max-h-[200px]">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="border border-gray-200 rounded-lg p-4 relative">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h5 className="font-medium text-sm text-[#0B0B2C] mb-1">Assignment 4: Answer Writing</h5>
+                          <p className="font-medium text-base text-[#0B0B2C] mb-2">Medieval History</p>
+                          <div className="text-xs text-[#74759A] mb-3" style={{ lineHeight: '12px' }}>
+                            <ul className="list-disc list-inside space-y-1">
+                              <li className="mb-1">Write a 5-page essay analyzing the key factors that led to.</li>
+                              <li>Include at least three scholarly sources.</li>
+                              <li>Follow the MLA format.</li>
+                            </ul>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="bg-[#EEEEEE] text-[#0B0B2C] px-2 py-1 rounded text-xs font-medium">
+                              Pending Grade
+                            </span>
+                            <span className="text-xs font-medium text-[#8586A6]">
+                              Due Date: <span className="text-[#0B0B2C]">Aug 20, 2024</span>
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end ml-4">
+                          <MoreHorizontal className="w-5 h-5 text-[#ACACAC] mb-2" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              {calendarEvents.map((event, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="text-sm font-medium text-gray-600">{event.time}</div>
-                    <div>
-                      <p className="font-medium text-gray-800">{event.course}</p>
-                      <p className="text-sm text-gray-600">{event.duration}</p>
+            {/* Bottom Left - Calendar */}
+            <div className="bg-white rounded-2xl shadow-sm" style={{ width: '573px', height: '378px' }}>
+              <div className="p-6">
+                <h3 className="font-bold text-lg mb-6 text-[#0B0B2C]">📅 Calendar</h3>
+                
+                <div className="flex justify-between mb-6">
+                  {calendarDays.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`flex flex-col items-center justify-center rounded-lg ${
+                        item.active ? 'bg-[#0D6CFF] text-white' : 'bg-[#ECF3FF] text-[#0B0B2C]'
+                      }`}
+                      style={{ width: '59px', height: '73px' }}
+                    >
+                      <div className="text-sm font-normal mb-1">{item.day}</div>
+                      <div className="text-2xl font-bold">{item.date}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <span className="text-xl font-semibold text-[#0B0B2C] mr-4">8:00 PM</span>
+                    <div className="flex-1 h-px border-t border-[#0D6CFF14]"></div>
+                  </div>
+                  
+                  <div className="bg-[#ECF3FF] rounded-lg p-4 xl:y-10 xl:px-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="font-medium text-base text-[#0B0B2C]">Medieval History</h4>
+                        <div className="flex -space-x-1">
+                          <img src="https://img.freepik.com/premium-photo/3d-cartoon-avatar-man-minimal-3d-character-avatar-profile_652053-2067.jpg" alt="user" className="w-5 h-5 rounded-full border border-white" />
+                          <img src="https://img.freepik.com/premium-photo/male-artist-3d-cartoon-avatar-portrait_839035-198908.jpg" alt="user" className="w-5 h-5 rounded-full border border-white" />
+                           <img src="https://file.aiquickdraw.com/imgcompressed/img/compressed_4b8289e8b6fef41f2b4459178780d82e.webp" alt="user" className="w-5 h-5 rounded-full border border-white" />
+
+                          
+                        </div>
+                        <span className="text-xs font-medium text-[#74759A]">+60 More</span>
+                      </div>
+                      <span className="bg-[#0D6CFF] text-white px-3 py-2 rounded text-xs font-semibold">In Progress</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-base font-medium text-[#0B0B2C]">8:00 - 9:00</span>
                     </div>
                   </div>
-                  <span className={`status-badge ${
-                    event.status === 'In Progress' ? 'status-progress' : 'status-pending'
-                  }`}>
-                    {event.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Performance Chart */}
-          <div className="bg-white rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-800">Performance Overview</h3>
-              <button className="flex items-center space-x-1 text-blue-600">
-                <span className="text-sm">This Month</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={performanceData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Line 
-                    type="monotone" 
-                    dataKey="students" 
-                    stroke="#3B82F6" 
-                    strokeWidth={2}
-                    dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="submissions" 
-                    stroke="#10B981" 
-                    strokeWidth={2}
-                    dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="grades" 
-                    stroke="#F59E0B" 
-                    strokeWidth={2}
-                    dot={{ fill: '#F59E0B', strokeWidth: 2, r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-center">
-                <div className="text-blue-600 font-semibold">150</div>
-                <div className="text-xs text-gray-600">Students</div>
-              </div>
-              <div className="text-center">
-                <div className="text-green-600 font-semibold">620</div>
-                <div className="text-xs text-gray-600">Submissions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-yellow-600 font-semibold">590</div>
-                <div className="text-xs text-gray-600">Graded</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Section - Assignments and Students */}
-        <div className="space-y-6">
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white rounded-lg p-4 card-shadow">
-              <div className="flex items-center space-x-2">
-                <Users className="w-8 h-8 text-blue-500" />
-                <div>
-                  <p className="text-2xl font-bold text-gray-800">225</p>
-                  <p className="text-sm text-gray-600">Total Students</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-lg p-4 card-shadow">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-8 h-8 text-green-500" />
-                <div>
-                  <p className="text-2xl font-bold text-gray-800">38</p>
-                  <p className="text-sm text-gray-600">Assignments</p>
+
+            {/* Bottom Right - Discussion Board */}
+            <div className="bg-white" style={{ width: '573px', height: '378px' }}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-bold text-lg text-[#0B0B2C]">💬 Discussion Board</h3>
+                  <button className="text-[#74759A] bg-white px-4 py-2 rounded-lg text-sm font-light flex items-center ">
+                    <Plus className="w-7 h-7 mr-2" />
+                    New Discussion
+                  </button>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Pending Assignments */}
-          <div className="bg-white rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">📋</span>
-                <h3 className="text-lg font-semibold text-gray-800">Pending Review</h3>
-              </div>
-              <button className="btn-primary flex items-center space-x-2">
-                <Plus className="w-4 h-4" />
-                <span>New Assignment</span>
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {assignments.map((assignment, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-800">{assignment.type}</h4>
-                    <button className="text-gray-400 hover:text-gray-600">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 014 0zM10 18a2 2 0 110-4 2 2 0 014 0z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-1">{assignment.course}</p>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Due: {assignment.dueDate}</span>
-                    <span className="text-blue-600 font-medium">{assignment.submissions} submissions</span>
-                  </div>
-                  <span className={`status-badge mt-2 inline-block ${
-                    assignment.status === 'Pending Grading' ? 'status-pending' : 'status-progress'
-                  }`}>
-                    {assignment.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Recent Students Activity */}
-          <div className="bg-white rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-gray-600" />
-                <h3 className="text-lg font-semibold text-gray-800">Recent Activity</h3>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              {students.map((student, index) => (
-                <div key={index} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <img
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=4F88FF&color=fff&size=32`}
-                      alt={student.name}
-                      className="w-8 h-8 rounded-full"
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder="Search Discussions..."
+                      className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg bg-[#F8FAFC] text-sm text-[#74759A] focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <div>
-                      <span className="font-medium text-gray-800 text-sm">{student.name}</span>
-                      <p className="text-xs text-gray-500">{student.course}</p>
-                    </div>
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0D6CFF]" />
                   </div>
-                  <div className="text-right">
-                    <span className="text-sm font-medium text-green-600">{student.performance}</span>
+                  <div className="relative">
+                    <button
+                      onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
+                      className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#EFF4FF] text-sm font-medium text-[#74759A] hover:bg-blue-100 transition-colors min-w-[120px]"
+                    >
+                      <span>Most Recent</span>
+                      <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${filterDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {filterDropdownOpen && (
+                      <div className="absolute top-full right-0 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                        {['Most Recent', 'Most Active', 'Oldest First'].map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => setFilterDropdownOpen(false)}
+                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-50 text-[#74759A] first:rounded-t-lg last:rounded-b-lg"
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Recent Discussions */}
-          <div className="bg-white rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-2">
-                <MessageCircle className="w-5 h-5 text-gray-600" />
-                <h3 className="text-lg font-semibold text-gray-800">Recent Discussions</h3>
+                <div className="space-y-4 overflow-y-auto max-h-[180px]">
+                  {[
+                    { user: 'Maya Thompson', class: 'Class 7', time: '12 Minutes', bg: '#FFFFFF', border: true },
+                    { user: 'Maya Thompson', class: 'Class 9', time: '12 Minutes', bg: '#ECF3FF', border: false }
+                  ].map((discussion, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-start rounded-lg p-4 shadow-sm ${discussion.border ? 'border border-gray-100' : ''}`}
+                      style={{ backgroundColor: discussion.bg }}
+                    >
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg mr-3 shadow-sm bg-gradient-to-br from-purple-500 to-blue-500">
+                        👩‍🎓
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <h4 className="font-semibold text-sm text-[#0B0B2C]">{discussion.user}</h4>
+                          <span className="text-xs bg-white px-2 py-1 rounded text-[#74759A] border">{discussion.class}</span>
+                          <span className="text-xs text-[#8586A6]">({discussion.time})</span>
+                        </div>
+                        <p className="text-sm text-[#5C5D73]">You: List the most recent or active discussion...</p>
+                      </div>
+                      <MoreHorizontal className="w-5 h-5 text-[#ACACAC] flex-shrink-0" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-
-            <div className="space-y-4">
-              {discussions.map((discussion, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(discussion.user)}&background=6366F1&color=fff&size=40`}
-                    alt={discussion.user}
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h4 className="font-medium text-gray-800 text-sm">{discussion.user}</h4>
-                      <span className="text-xs text-gray-500">{discussion.class}</span>
-                      <span className="text-xs text-gray-400">({discussion.time})</span>
-                    </div>
-                    <p className="text-sm text-gray-600">{discussion.message}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
-        </div>
+        </main>
       </div>
-    </main>
+    </div>
   );
 };
 
-export default ProfessorDashboardContent;
+export default ProfessorDashboard;

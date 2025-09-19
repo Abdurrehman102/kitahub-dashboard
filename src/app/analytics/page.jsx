@@ -4,9 +4,10 @@ import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import ProfessorSidebar from '../../components/ProfessorSidebar';
 import Header from '../../components/Header';
-import AnalyticsContent from '../../components/AnalyticsContent';
+// Import Error404Page since ResourcesContent doesn't exist yet
+import Error404Page from '../../components/404Page';
 
-const AnalyticsPage = () => {
+const ResourcesPage = () => {
     const searchParams = useSearchParams();
     const isProfessor = searchParams.get('role') === 'professor';
     
@@ -24,14 +25,12 @@ const AnalyticsPage = () => {
                     userType={isProfessor ? 'Professor' : 'Student'} 
                 />
                 <div className="flex-1 overflow-auto">
-                    <AnalyticsContent 
-                        userRole={isProfessor ? 'professor' : 'student'} 
-                        userName={isProfessor ? 'Prof. Jane Smith' : 'Maya Thompson'} 
-                    />
+                    {/* Show 404 since ResourcesContent doesn't exist yet */}
+                    <Error404Page />
                 </div>
             </div>
         </div>
     );
 };
 
-export default AnalyticsPage;
+export default ResourcesPage;

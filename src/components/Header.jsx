@@ -77,7 +77,7 @@ const Header = ({ userName = 'Maya Thompson', userType = 'Student', userRole = '
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
               <img 
-                src="/api/placeholder/40/40" 
+                src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001877.png" 
                 alt="Profile" 
                 className="w-full h-full rounded-full object-cover"
                 onError={(e) => {
