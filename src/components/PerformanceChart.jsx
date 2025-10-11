@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, Calendar, Target, Award, BookOpen } from 'lucide-react';
+import DashboardLayout from '@/components/DashboardLayout';
 
 const PerformanceChart = () => {
   const [activeTab, setActiveTab] = useState('overview');

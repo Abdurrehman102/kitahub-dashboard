@@ -4,6 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import ProfessorSidebar from '../../components/ProfessorSidebar';
 import Header from '../../components/Header';
+import DashboardLayout from '@/components/DashboardLayout';
+
 // Import Error404Page since ResourcesContent doesn't exist yet
 import Error404Page from '../../components/404Page';
 

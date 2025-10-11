@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
 
 // Sidebar and Header components are defined within this single file to create a complete application.
 const Sidebar = ({ userType, userName }) => {

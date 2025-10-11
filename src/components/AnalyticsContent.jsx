@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, Users, BookOpen, Award, Calendar, Clock } from 'lucide-react';
+import DashboardLayout from '@/components/DashboardLayout';
 
 const AnalyticsContent = () => {
   const performanceData = [

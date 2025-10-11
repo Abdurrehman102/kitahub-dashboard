@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faLock } from '@fortawesome/free-solid-svg-icons';
+import DashboardLayout from '@/components/DashboardLayout';
 
 const SettingsContent = () => {
     return (

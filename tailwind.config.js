@@ -1,7 +1,6 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-   './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
@@ -41,6 +40,7 @@ module.exports = {
         'gradient-secondary': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
         'gradient-blue': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
         'gradient-purple': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'sidebar-gradient': 'linear-gradient(180deg, #340058 0%, #0D6CFF 100%)',
       },
       boxShadow: {
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -80,4 +80,4 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
   ],
-}
+};

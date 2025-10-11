@@ -1,71 +1,120 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { 
+  IoGridOutline, 
+  IoBookOutline, 
+  IoChatbubbleOutline, 
+  IoPeopleOutline,
+  IoFolderOutline,
+  IoBarChartOutline,
+  IoExitOutline,
+  IoMenuOutline,
+  IoCloseOutline
+} from 'react-icons/io5';
 
 const ProfessorSidebar = ({ userType = 'professor' }) => {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const professorMenuItems = [
-    { name: 'Overview', href: '/professor', icon: '👁️' },
-    { name: 'Assignments', href: '/assignments?role=professor', icon: '📝' },
-    { name: 'Discussions', href: '/discussions?role=professor', icon: '💬' },
-    { name: 'Students', href: '/students?role=professor', icon: '👥' },
-    { name: 'Resources', href: '/resources?role=professor', icon: '📁' },
-    { name: 'Analytics', href: '/analytics?role=professor', icon: '📈' },
+    { name: 'Overview', href: '/professor', icon: <IoGridOutline /> },
+    { name: 'Assignments', href: '/assignments?role=professor', icon: <IoBookOutline /> },
+    { name: 'Discussions', href: '/discussions?role=professor', icon: <IoChatbubbleOutline /> },
+    { name: 'Students', href: '/students?role=professor', icon: <IoPeopleOutline /> },
+    { name: 'Resources', href: '/resources?role=professor', icon: <IoFolderOutline /> },
+    { name: 'Analytics', href: '/analytics?role=professor', icon: <IoBarChartOutline /> },
   ];
 
   const isActive = (href) => {
     if (href === '/professor') {
       return pathname === '/professor';
     }
-    return pathname === href.split('?')[0];
+    const basePath = href.split('?')[0];
+    const currentBasePath = pathname.split('?')[0];
+    return currentBasePath === basePath;
+  };
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
   };
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 sidebar-gradient text-white z-50">
-      {/* Logo */}
-      <div className="p-6">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-            <div className="w-6 h-6 bg-blue-600 rounded transform rotate-12"></div>
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 left-4 z-[10000] p-2 rounded-lg bg-gradient-to-r from-[#D620FF] to-[#0D6CFF] text-white lg:hidden"
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <IoCloseOutline className="text-2xl" /> : <IoMenuOutline className="text-2xl" />}
+      </button>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-[9998] lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div 
+        className={`fixed left-0 top-0 h-full w-[238px] text-white transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{
+          background: 'linear-gradient(0deg, #D620FF 0%, #0D6CFF 100%)',
+          zIndex: 9999
+        }}
+      >
+        {/* Header */}
+        <div className="py-8 px-6 border-b border-white border-opacity-20">
+          <div className="flex items-center space-x-2">
+            <div className="w-9 h-9 bg-white rounded flex items-center justify-center">
+              <span className="text-[#4A148C] font-bold text-2xl">K</span>
+            </div>
+            <span className="font-bold text-lg">KITAHUB</span>
           </div>
-          <span className="text-xl font-bold">KITAHUB</span>
         </div>
-      </div>
 
-      {/* Navigation */}
-      <nav className="px-4 space-y-2">
-        {professorMenuItems.map((item) => {
-          const active = isActive(item.href);
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-white hover:bg-opacity-20 ${
-                active
-                  ? 'bg-white bg-opacity-20 border-r-4 border-white'
-                  : ''
-              }`}
-            >
-              <span className="text-lg">{item.icon}</span>
-              <span className="font-medium">{item.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Logout */}
-      <div className="absolute bottom-6 left-4 right-4">
-        <Link
-          href="/"
-          className="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-white hover:bg-opacity-20"
-        >
-          <span className="text-lg">🚪</span>
-          <span className="font-medium">Log Out</span>
-        </Link>
+        {/* Navigation */}
+        <nav className="px-6 pt-4 overflow-y-auto h-[calc(100%-120px)]">
+          {professorMenuItems.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={handleLinkClick}
+                className={`flex items-center px-4 py-3 mb-2 rounded-lg transition-colors relative ${
+                  active 
+                    ? 'bg-white text-[#4A148C]' 
+                    : 'text-white hover:bg-white hover:bg-opacity-20'
+                }`}
+                style={{ pointerEvents: 'auto' }}
+              >
+                <span className="mr-3 text-xl">{item.icon}</span>
+                <span className="font-medium text-sm">{item.name}</span>
+              </Link>
+            );
+          })}
+          
+          {/* Log Out */}
+          <Link
+            href="/"
+            onClick={handleLinkClick}
+            className="flex items-center px-4 py-3 mb-2 rounded-lg transition-colors text-white hover:bg-white hover:bg-opacity-20 relative"
+            style={{ pointerEvents: 'auto' }}
+          >
+            <IoExitOutline className="mr-3 text-xl" />
+            <span className="font-medium text-sm">Log Out</span>
+          </Link>
+        </nav>
       </div>
-    </div>
+    </>
   );
 };
 
