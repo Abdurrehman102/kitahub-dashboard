@@ -3,7 +3,7 @@ import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
-// import CourseContent from '../../components/CourseContent'; // Student dashboard
+import CourseContent from '../../components/CourseContent'; // Student dashboard
 import ProfessorOverviewContent from '../../components/ProfessorOverviewContent.jsx'; // Professor dashboard
 
 const OverviewPage = () => {
