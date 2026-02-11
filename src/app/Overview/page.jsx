@@ -1,30 +1,40 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react'; // Suspense import kiya
 import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
-// Line 6 hata di kyunke CourseContent file nahi hai
+import DashboardContent from '../../components/DashboardContent';
 import ProfessorOverviewContent from '../../components/ProfessorOverviewContent.jsx';
-import DashboardContent from '../../components/DashboardContent'; // Isay backup ke liye use kar len
 
-const OverviewPage = () => {
+// Ek chota component banayen jo search params ko handle kare
+const OverviewContent = () => {
     const searchParams = useSearchParams();
     const role = searchParams.get('role') || 'professor';
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            <Sidebar userType={role} />
-            <div className="flex-1 flex flex-col">
-                <Header userRole={role} userName={role === 'student' ? 'Maya Thompson' : 'Prof. Jane Smith'} />
-                <div className="flex-1 overflow-auto p-4">
-                    {role === 'student' ? (
-                        /* CourseContent ki jagah ye likh den */
-                        <DashboardContent userRole="student" /> 
-                    ) : (
-                        <ProfessorOverviewContent userRole="professor" />
-                    )}
-                </div>
+        <div className="flex-1 flex flex-col">
+            <Header userRole={role} userName={role === 'student' ? 'Maya Thompson' : 'Prof. Jane Smith'} />
+            <div className="flex-1 overflow-auto p-4">
+                {role === 'student' ? (
+                    <DashboardContent userRole="student" />
+                ) : (
+                    <ProfessorOverviewContent userRole="professor" />
+                )}
             </div>
+        </div>
+    );
+};
+
+// Main page component jo Suspense boundary provide karega
+const OverviewPage = () => {
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            {/* Sidebar ko Suspense se bahar rakh sakte hain kyunki wo hook use nahi kar raha */}
+            <Sidebar userType="professor" /> 
+            
+            <Suspense fallback={<div>Loading...</div>}>
+                <OverviewContent />
+            </Suspense>
         </div>
     );
 };
