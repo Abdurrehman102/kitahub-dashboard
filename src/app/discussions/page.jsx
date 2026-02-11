@@ -1,17 +1,18 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react'; // Suspense import kiya
 import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import ProfessorSidebar from '../../components/ProfessorSidebar';
 import Header from '../../components/Header';
 import DiscussionsContent from '../../components/DiscussionsContent';
 
-const DiscussionsPage = () => {
+// 1. Logic aur UI ko alag component mein nikal liya
+const DiscussionsContentWrapper = () => {
     const searchParams = useSearchParams();
     const isProfessor = searchParams.get('role') === 'professor';
     
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-gray-50 w-full">
             {/* Always show the correct sidebar based on role */}
             {isProfessor ? (
                 <ProfessorSidebar userType="professor" />
@@ -32,6 +33,15 @@ const DiscussionsPage = () => {
                 </div>
             </div>
         </div>
+    );
+};
+
+// 2. Main page boundary provide karega
+const DiscussionsPage = () => {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading Discussions...</div>}>
+            <DiscussionsContentWrapper />
+        </Suspense>
     );
 };
 

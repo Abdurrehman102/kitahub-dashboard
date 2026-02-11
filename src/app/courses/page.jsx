@@ -1,18 +1,18 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react'; // Suspense import kiya
 import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import ProfessorSidebar from '../../components/ProfessorSidebar';
 import Header from '../../components/Header';
-// Import Error404Page since ResourcesContent doesn't exist yet
 import Error404Page from '../../components/404Page';
 
-const ResourcesPage = () => {
+// 1. Logic ko alag component mein nikal liya
+const ResourcesContent = () => {
     const searchParams = useSearchParams();
     const isProfessor = searchParams.get('role') === 'professor';
     
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-gray-50 w-full">
             {isProfessor ? (
                 <ProfessorSidebar userType="professor" />
             ) : (
@@ -25,11 +25,19 @@ const ResourcesPage = () => {
                     userType={isProfessor ? 'Professor' : 'Student'} 
                 />
                 <div className="flex-1 overflow-auto">
-                    {/* Show 404 since ResourcesContent doesn't exist yet */}
                     <Error404Page />
                 </div>
             </div>
         </div>
+    );
+};
+
+// 2. Main page sirf boundary provide karega
+const ResourcesPage = () => {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen font-bold">Loading Resources...</div>}>
+            <ResourcesContent />
+        </Suspense>
     );
 };
 

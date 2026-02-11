@@ -1,36 +1,35 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
-import ProfessorSidebar from '../../components/ProfessorSidebar';
 import Header from '../../components/Header';
-// Import Error404Page since ResourcesContent doesn't exist yet
-import Error404Page from '../../components/404Page';
+import AnalyticsContent from '../../components/AnalyticsContent';
 
-const ResourcesPage = () => {
+// 1. Content ko alag component mein nikalen
+const AnalyticsPageContent = () => {
     const searchParams = useSearchParams();
-    const isProfessor = searchParams.get('role') === 'professor';
-    
+    const role = searchParams.get('role') || 'professor';
+
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            {isProfessor ? (
-                <ProfessorSidebar userType="professor" />
-            ) : (
-                <Sidebar userType="student" />
-            )}
-            <div className="flex-1 flex flex-col">
-                <Header 
-                    userRole={isProfessor ? 'professor' : 'student'} 
-                    userName={isProfessor ? 'Prof. Jane Smith' : 'Maya Thompson'} 
-                    userType={isProfessor ? 'Professor' : 'Student'} 
-                />
-                <div className="flex-1 overflow-auto">
-                    {/* Show 404 since ResourcesContent doesn't exist yet */}
-                    <Error404Page />
-                </div>
-            </div>
+        <div className="flex-1 flex flex-col">
+            <Header userRole={role} userName={role === 'student' ? 'Maya Thompson' : 'Prof. Jane Smith'} />
+            <main className="flex-1 overflow-auto p-4">
+                <AnalyticsContent userRole={role} />
+            </main>
         </div>
     );
 };
 
-export default ResourcesPage;
+// 2. Main page par Suspense wrap karen
+const AnalyticsPage = () => {
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            <Sidebar userType="professor" />
+            <Suspense fallback={<div className="p-10">Loading Analytics...</div>}>
+                <AnalyticsPageContent />
+            </Suspense>
+        </div>
+    );
+};
+
+export default AnalyticsPage;
