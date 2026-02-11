@@ -1,36 +1,35 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react'; // Suspense lazmi hai
 import { useSearchParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
-import ProfessorSidebar from '../../components/ProfessorSidebar';
 import Header from '../../components/Header';
-// Import Error404Page or create a simple placeholder
-import Error404Page from '../../components/404Page';
+import DashboardContent from '../../components/DashboardContent';
 
-const StudentsPage = () => {
+// 1. UI ko alag component mein nikalen
+const StudentDashboardContent = () => {
     const searchParams = useSearchParams();
-    const isProfessor = searchParams.get('role') === 'professor';
-    
+    const role = searchParams.get('role') || 'student';
+
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            {isProfessor ? (
-                <ProfessorSidebar userType="professor" />
-            ) : (
-                <Sidebar userType="student" />
-            )}
-            <div className="flex-1 flex flex-col">
-                <Header 
-                    userRole={isProfessor ? 'professor' : 'student'} 
-                    userName={isProfessor ? 'Prof. Jane Smith' : 'Maya Thompson'} 
-                    userType={isProfessor ? 'Professor' : 'Student'} 
-                />
-                <div className="flex-1 overflow-auto">
-                    {/* Show 404 since StudentsContent doesn't exist yet */}
-                    <Error404Page />
-                </div>
+        <div className="flex-1 flex flex-col">
+            <Header userRole={role} userName="Maya Thompson" userType="Student" />
+            <div className="flex-1 overflow-auto">
+                <DashboardContent userRole="student" userName="Maya Thompson" />
             </div>
         </div>
     );
 };
 
-export default StudentsPage;
+// 2. Main page par Suspense boundary lagayen
+const StudentPage = () => {
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            <Sidebar currentPage="dashboard" userRole="student" />
+            <Suspense fallback={<div className="p-10 font-bold">Loading Student Dashboard...</div>}>
+                <StudentDashboardContent />
+            </Suspense>
+        </div>
+    );
+};
+
+export default StudentPage;
