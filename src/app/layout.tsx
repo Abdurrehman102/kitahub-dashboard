@@ -1,8 +1,7 @@
 import './globals.css';
-import Script from 'next/script'; // Next.js ka Script component import karen
-import { Inter } from 'next/font/google'; // Google Font optimization ke liye
+import Script from 'next/script';
+import { Inter } from 'next/font/google';
 
-// Font setup
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -10,11 +9,18 @@ export const metadata = {
   description: 'A comprehensive learning management system for students and professors',
 }
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
-        <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
+        <Script 
+          src="https://cdn.tailwindcss.com" 
+          strategy="beforeInteractive" 
+        />
       </head>
       <body className={`${inter.className} bg-gray-50`}>
         {children}
